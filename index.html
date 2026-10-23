@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pool League</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='46' fill='%23111'/><circle cx='50' cy='50' r='22' fill='%23fff'/><text x='50' y='60' font-size='28' text-anchor='middle' font-family='Arial' font-weight='bold'>8</text></svg>">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="top">
+    <div class="brand">
+      <span class="ball">8</span>
+      <div>
+        <h1>Pool League</h1>
+        <p id="league-name" class="muted"></p>
+      </div>
+    </div>
+    <button id="share-btn" class="ghost" hidden>Share link</button>
+  </header>
+
+  <div id="demo-banner" class="banner" hidden>
+    Demo mode: games are saved only in this browser. Add your Firebase config in <code>js/config.js</code> to share them.
+  </div>
+
+  <nav id="tabs" class="tabs" hidden>
+    <a href="#standings" data-tab="standings">Standings</a>
+    <a href="#log" data-tab="log">Log a game</a>
+    <a href="#rules" data-tab="rules">Rules</a>
+  </nav>
+
+  <main id="main"></main>
+  <div id="toast" class="toast" hidden></div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

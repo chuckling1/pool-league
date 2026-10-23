@@ -1,0 +1,44 @@
+rules_version = '2';
+
+// No logins. Anyone who knows a league code can read it and log games in it.
+// These rules only make sure the data has the right shape, and stop games
+// from being edited or deleted after 24 hours.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function validLeague(league) {
+      return league.matches('^[a-z0-9-]{4,40}$');
+    }
+
+    function validPlayer(d) {
+      return d.keys().hasOnly(['name', 'createdAt'])
+        && d.name is string
+        && d.name.size() > 0
+        && d.name.size() <= 30
+        && d.createdAt == request.time;
+    }
+
+    function validGame(d) {
+      return d.keys().hasOnly(['type', 'players', 'winner', 'playedAt'])
+        && d.type in ['8-ball', '9-ball', 'cutthroat']
+        && d.players is list
+        && ((d.type == 'cutthroat' && d.players.size() >= 3 && d.players.size() <= 5)
+            || (d.type != 'cutthroat' && d.players.size() == 2))
+        && d.winner is string
+        && d.winner in d.players
+        && d.playedAt == request.time;
+    }
+
+    match /leagues/{league}/players/{playerId} {
+      allow read: if validLeague(league);
+      allow create: if validLeague(league) && validPlayer(request.resource.data);
+    }
+
+    match /leagues/{league}/games/{gameId} {
+      allow read: if validLeague(league);
+      allow create: if validLeague(league) && validGame(request.resource.data);
+      allow delete: if validLeague(league)
+        && request.time < resource.data.playedAt + duration.value(24, 'h');
+    }
+  }
+}
